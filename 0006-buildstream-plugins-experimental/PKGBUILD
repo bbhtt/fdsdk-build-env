@@ -1,0 +1,29 @@
+pkgname=buildstream-plugins-experimental
+pkgver=1.99.3
+pkgrel=1
+pkgdesc="A collection of experimental BuildStream plugins."
+arch=(any)
+url="https://buildstream.build"
+license=('LGPL')
+depends=(
+    buildstream
+    bazel
+    git
+    ostree
+    python-arpy
+    python-requests
+    quilt
+)
+makedepends=(cython git python-packaging python-setuptools)
+source=("git+https://gitlab.com/BuildStream/bst-plugins-experimental.git#tag=${pkgver}&commit=3f336764871066cc833912352d3a2d59d9559396")
+sha256sums=('SKIP')
+
+build() {
+  cd bst-plugins-experimental
+  python setup.py build
+}
+
+package() {
+  cd bst-plugins-experimental
+  python setup.py install --root="$pkgdir/" --skip-build
+}

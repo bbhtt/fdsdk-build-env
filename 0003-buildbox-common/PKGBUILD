@@ -1,0 +1,45 @@
+pkgname=buildbox-common
+pkgver=1.2.1
+pkgrel=1
+pkgdesc="Shared protocol-buffer definitions and various helper functions"
+arch=(x86_64)
+url="https://buildgrid.build"
+license=('Apache')
+depends=('gflags' 'google-glog' 'grpc' 'gtest')
+makedepends=('benchmark' 'c-ares' 'cmake' 'git' 'gmock'  'ninja' 'tomlplusplus' 'nlohmann-json')
+source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=8f5511980c19a8e90f0399b826364b8141a8c985")
+sha256sums=('SKIP')
+
+build() {
+  mkdir -p build
+  cd build
+  sed -i 's/STATIC/SHARED/' ../buildbox-common/CMakeLists.txt
+  CXXFLAGS="-flto=auto -flto-partition=one -fuse-linker-plugin -fno-fat-lto-objects -O2 -ffunction-sections -Wl,--gc-sections ${CXXFLAGS}" cmake ../buildbox-common \
+    -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCASD=ON \
+    -DCASDOWNLOAD=ON \
+    -DCASUPLOAD=ON \
+    -DFUSE=ON \
+    -DLOGSTREAMRECEIVER=ON \
+    -DLOGSTREAMTAIL=ON \
+    -DOUTPUTSTREAMER=ON \
+    -DRECC=ON \
+    -DREXPLORER=ON \
+    -DRUMBA=ON \
+    -DRUN_BUBBLEWRAP=ON \
+    -DRUN_HOSTTOOLS=ON \
+    -DRUN_OCI=ON \
+    -DRUN_USERCHROOT=ON \
+    -DTREXE=ON \
+    -DWORKER=ON \
+    -DHARDEN=ON \
+    -DBUILD_TESTING=OFF 
+  ninja
+}
+
+package() {
+  cd build
+  DESTDIR="$pkgdir/" ninja install
+}
