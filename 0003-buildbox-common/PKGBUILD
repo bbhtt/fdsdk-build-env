@@ -1,5 +1,5 @@
 pkgname=buildbox-common
-pkgver=1.2.1
+pkgver=1.2.33
 pkgrel=1
 pkgdesc="Shared protocol-buffer definitions and various helper functions"
 arch=(x86_64)
@@ -7,7 +7,7 @@ url="https://buildgrid.build"
 license=('Apache')
 depends=('gflags' 'google-glog' 'grpc' 'gtest')
 makedepends=('benchmark' 'c-ares' 'cmake' 'git' 'gmock'  'ninja' 'tomlplusplus' 'nlohmann-json')
-source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=8f5511980c19a8e90f0399b826364b8141a8c985")
+source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=d05e3d57d122c7f2d0bd9b7e175c36f9535198bc")
 sha256sums=('SKIP')
 
 build() {
@@ -42,5 +42,4 @@ build() {
 package() {
   cd build
   DESTDIR="$pkgdir/" ninja install
-  ln -s "/usr/bin/buildbox-run-bubblewrap" "$pkgdir/usr/bin/buildbox-run"
 }

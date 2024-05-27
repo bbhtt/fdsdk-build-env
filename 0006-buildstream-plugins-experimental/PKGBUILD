@@ -1,5 +1,5 @@
 pkgname=buildstream-plugins-experimental
-pkgver=1.99.3
+pkgver=2.0.2
 pkgrel=1
 pkgdesc="A collection of experimental BuildStream plugins."
 arch=(any)
@@ -15,15 +15,15 @@ depends=(
     quilt
 )
 makedepends=(cython git python-packaging python-setuptools)
-source=("git+https://gitlab.com/BuildStream/bst-plugins-experimental.git#tag=${pkgver}&commit=3f336764871066cc833912352d3a2d59d9559396")
+source=("git+https://gitlab.com/BuildStream/buildstream-plugins-community#tag=${pkgver}&commit=587f27f72c42f81848ba41a3fd542e7a1c093bde")
 sha256sums=('SKIP')
 
 build() {
-  cd bst-plugins-experimental
+  cd buildstream-plugins-community
   python setup.py build
 }
 
 package() {
-  cd bst-plugins-experimental
+  cd buildstream-plugins-community
   python setup.py install --root="$pkgdir/" --skip-build
 }
