@@ -1,0 +1,9 @@
+*/pkg
+*/src
+0003-buildbox-common/buildbox-common
+0004-buildstream/buildstream
+0005-buildstream-plugins/buildstream-plugins
+0006-buildstream-plugins-experimental/bst-plugins-experimental
+0007-buildstream-plugins-container/bst-plugins-container
+*.pkg.tar.zst
+*.tar.gz
