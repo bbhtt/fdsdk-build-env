@@ -42,4 +42,5 @@ build() {
 package() {
   cd build
   DESTDIR="$pkgdir/" ninja install
+  ln -s "/usr/bin/buildbox-run-bubblewrap" "$pkgdir/usr/bin/buildbox-run"
 }
