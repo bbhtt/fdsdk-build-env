@@ -12,6 +12,7 @@ depends=(
     ostree
     python-arpy
     python-requests
+    python-tomlkit
     quilt
 )
 makedepends=(cython git python-packaging python-setuptools)
