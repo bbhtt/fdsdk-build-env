@@ -1,8 +1,6 @@
 FROM archlinux:latest
 
 LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
-LABEL org.opencontainers.image.title="Freedesktop SDK Build Environment"
-LABEL org.opencontainers.image.source="https://github.com/bbhtt/buildstream-aur-packages"
 
 ARG user=user
 
@@ -32,7 +30,6 @@ RUN touch /home/${user}/.zshrc
 RUN printf "echo 'A zsh config provided at ~/zshrc, move it to ~/.zshrc to have effect'\n" >> /home/${user}/.zshrc
 RUN sudo chsh -s $(which zsh)
 RUN cd /home/${user}/build-root && ./makepkg.sh || true
-
 
 RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
