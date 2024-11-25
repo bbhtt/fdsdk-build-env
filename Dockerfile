@@ -13,7 +13,8 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	diffoscope diffutils wl-clipboard eza flatpak-builder git-delta \
 	micro qemu-base starship swtpm time traceroute trash-cli tree wget \
 	zsh inetutils fzf python-pip python-virtualenv python-gitlab ruff \
-	python-pylint python-ruamel-yaml libabigail openssh gnupg less
+	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
+	qemu-user-static qemu-user-static-binfmt 
 
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
