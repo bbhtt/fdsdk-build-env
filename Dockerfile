@@ -35,7 +35,7 @@ RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
 	&& sudo pacman -Scc --noconfirm \
 	&& sudo rm -rf /tmp/* \
-	&& sudo rm -rf /home/${user}/build-root
+	&& sudo rm -rf /home/${user}/build-root \
 	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers
 
 WORKDIR  /home/${user}
