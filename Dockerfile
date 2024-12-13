@@ -14,7 +14,13 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	micro qemu-base starship swtpm time traceroute trash-cli tree wget \
 	zsh inetutils fzf python-pip python-virtualenv python-gitlab ruff \
 	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
-	qemu-user-static qemu-user-static-binfmt 
+	qemu-user-static qemu-user-static-binfmt python-gitlab \
+	python-ruamel-yaml python-packaging python-pyelftools \
+	python-urllib3 python-pyaml
+
+RUN pip install --break-system-packages libversion
+RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
+RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
 
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
