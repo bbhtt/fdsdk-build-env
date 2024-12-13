@@ -18,7 +18,6 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	python-ruamel-yaml python-packaging python-pyelftools \
 	python-urllib3 python-pyaml
 
-RUN pip install --break-system-packages libversion
 RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
 RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
 
@@ -36,6 +35,8 @@ RUN curl -s -o /home/${user}/zshrc https://raw.githubusercontent.com/bbhtt/dotfi
 RUN printf "echo 'A zsh config is provided at ~/zshrc, move it to ~/.zshrc to have effect'\n" > ~/.zshrc
 RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream.conf
 RUN cd /home/${user}/build-root && ./makepkg.sh || true
+
+RUN sudo pip install --break-system-packages libversion
 
 RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
