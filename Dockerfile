@@ -18,9 +18,6 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	python-ruamel-yaml python-packaging python-pyelftools \
 	python-urllib3 python-pyaml lzip
 
-RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
-RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
-
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
 
@@ -36,6 +33,8 @@ RUN printf "echo 'A zsh config is provided at ~/zshrc, move it to ~/.zshrc to ha
 RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream.conf
 RUN cd /home/${user}/build-root && ./makepkg.sh || true
 
+RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
+RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
 RUN sudo pip install --break-system-packages libversion
 
 RUN sudo pacman --noconfirm -Syyuu \
