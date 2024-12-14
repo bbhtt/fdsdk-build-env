@@ -1,41 +1,29 @@
 pkgname=buildbox-common
-pkgver=1.2.33
+pkgver=1.2.35
 pkgrel=1
 pkgdesc="Shared protocol-buffer definitions and various helper functions"
 arch=(x86_64)
 url="https://buildgrid.build"
 license=('Apache')
-depends=('gflags' 'google-glog' 'grpc' 'gtest')
-makedepends=('benchmark' 'c-ares' 'cmake' 'git' 'gmock'  'ninja' 'tomlplusplus' 'nlohmann-json')
-source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=d05e3d57d122c7f2d0bd9b7e175c36f9535198bc")
+depends=('bubblewrap' 'fuse3' 'google-glog' 'grpc' 'openssl' 'protobuf' 'tomlplusplus' 'util-linux')
+makedepends=('cmake' 'git' 'ninja' 'tomlplusplus')
+source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=c403477d00cf32ce53e723cfd47d4d2d9f08a3c8")
 sha256sums=('SKIP')
 
 build() {
-  mkdir -p build
-  cd build
-  sed -i 's/STATIC/SHARED/' ../buildbox-common/CMakeLists.txt
-  CXXFLAGS="-flto=auto -flto-partition=one -fuse-linker-plugin -fno-fat-lto-objects -O2 -ffunction-sections -Wl,--gc-sections ${CXXFLAGS}" cmake ../buildbox-common \
+  mkdir -p build && cd build
+  cmake ../buildbox-common \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_TESTING=OFF \
+    -DTOOLS=OFF \
     -DCASD=ON \
-    -DCASDOWNLOAD=ON \
-    -DCASUPLOAD=ON \
+    -DCASD_BUILD_BENCHMARK=OFF \
     -DFUSE=ON \
-    -DLOGSTREAMRECEIVER=ON \
-    -DLOGSTREAMTAIL=ON \
-    -DOUTPUTSTREAMER=ON \
     -DRECC=ON \
-    -DREXPLORER=ON \
-    -DRUMBA=ON \
     -DRUN_BUBBLEWRAP=ON \
-    -DRUN_HOSTTOOLS=ON \
-    -DRUN_OCI=ON \
-    -DRUN_USERCHROOT=ON \
-    -DTREXE=ON \
-    -DWORKER=ON \
-    -DHARDEN=ON \
-    -DBUILD_TESTING=OFF 
+    -DWORKER=ON
   ninja
 }
 
