@@ -16,7 +16,7 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
 	qemu-user-static qemu-user-static-binfmt python-gitlab \
 	python-ruamel-yaml python-packaging python-pyelftools \
-	python-urllib3 python-pyaml
+	python-urllib3 python-pyaml lzip
 
 RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
 RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
