@@ -38,6 +38,9 @@ RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infra
 RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
 RUN sudo pip install --break-system-packages libversion
 
+RUN sudo pacman --noconfirm -Rdd python-dulwich
+RUN sudo pip install --break-system-packages dulwich==0.22.1
+
 RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
 	&& sudo pacman -Scc --noconfirm \
