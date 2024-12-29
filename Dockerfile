@@ -1,3 +1,11 @@
+# The Unlicense
+#
+# This is free and unencumbered software released into the public domain.
+# Anyone is free to copy, modify, distribute, and perform the software, as well as
+# to sublicense it, all without any conditions whatsoever.
+#
+# See the full text of the Unlicense at: https://unlicense.org/
+
 FROM archlinux:latest
 
 LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
