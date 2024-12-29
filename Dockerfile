@@ -33,6 +33,7 @@ RUN printf "echo 'A zsh config is provided at ~/zshrc, move it to ~/.zshrc to ha
 RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream.conf
 RUN cd /home/${user}/build-root && ./makepkg.sh || true
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
+RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
 RUN sudo pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
 RUN sudo pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
