@@ -41,6 +41,10 @@ RUN sudo pip install --break-system-packages libversion
 RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1
 
+RUN sudo mkdir -p /usr/local/bin/
+RUN sudo mv /home/${user}/.local/bin/* /usr/local/bin/
+RUN sudo chmod +x /usr/local/bin/*
+
 RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
 	&& sudo pacman -Scc --noconfirm \
