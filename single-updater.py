@@ -95,7 +95,6 @@ def run_updater(branch, element):
             f"--base_branch={branch}",
             "--nobuild",
             "--overwrite",
-            "--push",
             "--shuffle-branches",
             "--on_track_error=continue",
             element,
