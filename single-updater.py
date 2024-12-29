@@ -103,10 +103,6 @@ def run_updater(branch, element):
         stderr=subprocess.DEVNULL,
         check=False,
     )
-    # It fails due to too many random tracking errors
-    # that aren't handled upstream. But it can still create
-    # branches with updates as it goes which are useful
-    return True
 
 
 def create_branch(base_branch):
@@ -136,11 +132,10 @@ def reformat_commit_message(commit_message):
 
 
 def cherry_pick_top_commit(branches, new_branch):
-    all_successful = True
     for branch in branches:
         checkout_branch(branch)
         result = subprocess.run(
-            ["git", "log", "--format=%H", "-n", "1"],
+            ["git", "rev-parse", "HEAD"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             check=False,
@@ -170,9 +165,6 @@ def cherry_pick_top_commit(branches, new_branch):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-        else:
-            all_successful = False
-    return all_successful
 
 
 def checkout_branch(branch):
@@ -205,10 +197,7 @@ def cleanup(branches, base_branch, branch_regex):
     checkout_branch(base_branch)
     clean_branches = [branch for branch in branches if re.match(branch_regex, branch)]
     for branch in clean_branches:
-        if not delete_branch(branch):
-            logging.error(f"Failed to delete local branch: {branch}")
-            return False
-    return True
+        delete_branch(branch)
 
 
 def main():
@@ -234,41 +223,41 @@ def main():
     )
     args = parser.parse_args()
 
-    branch_regex = rf"^update/(components|include|abi|bootstrap|extensions)_.*[.](bst|yml)-diff_md5-.*-for-({args.base_branch})$"
+    branch_regex = rf"^update/(components|include|abi|bootstrap|extensions)_.*[.](bst|yml)-diff_md5-.*-for-{args.base_branch}$"
 
     if not validate_environment(args.element, args.base_branch):
         return 1
 
-    branches = get_local_branches()
-    if not branches:
+    if not get_local_branches():
         logging.error("No branches found")
         return 1
 
-    if not args.no_cleanup and not cleanup(branches, args.base_branch, branch_regex):
-        return 1
+    if not args.no_cleanup:
+        cleanup(get_local_branches(), args.base_branch, branch_regex)
 
-    if run_updater(args.base_branch, args.element):
-        if not is_dirty():
-            new_branch = create_branch(args.base_branch)
-            if new_branch:
-                new_branches = [
-                    branch for branch in branches if re.match(branch_regex, branch)
-                ]
-                if not cherry_pick_top_commit(new_branches, new_branch):
-                    logging.error("Failed to cherry-pick commit")
-                    return 1
-            else:
-                logging.error("Failed to create new branch")
-                return 1
+    run_updater(args.base_branch, args.element)
+
+    if not is_dirty():
+        new_branch = create_branch(args.base_branch)
+        if new_branch:
+            new_branches = [
+                branch
+                for branch in get_local_branches()
+                if re.match(branch_regex, branch)
+            ]
+            cherry_pick_top_commit(new_branches, new_branch)
+            if not args.no_cleanup:
+                cleanup(new_branches, args.base_branch, branch_regex)
+            checkout_branch(new_branch)
         else:
-            logging.error(
-                "The repository is dirty after running auto_updater"
-                if is_dirty()
-                else "Failed to checkout new branch"
-            )
+            logging.error("Failed to create new branch")
             return 1
     else:
-        logging.error("auto_updater failed")
+        logging.error(
+            "The repository is dirty after running auto_updater"
+            if is_dirty()
+            else "Failed to checkout new branch"
+        )
         return 1
 
     return 0
