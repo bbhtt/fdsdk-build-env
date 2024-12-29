@@ -253,11 +253,7 @@ def main():
             logging.error("Failed to create new branch")
             return 1
     else:
-        logging.error(
-            "The repository is dirty after running auto_updater"
-            if is_dirty()
-            else "Failed to checkout new branch"
-        )
+        logging.error("The repository is dirty after running auto_updater")
         return 1
 
     return 0
