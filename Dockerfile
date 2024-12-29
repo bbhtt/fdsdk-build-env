@@ -34,15 +34,15 @@ RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream
 RUN cd /home/${user}/build-root && ./makepkg.sh || true
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 
-RUN pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
-RUN pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
+RUN sudo pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
+RUN sudo pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
 RUN sudo pip install --break-system-packages libversion
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1
 
 RUN sudo mkdir -p /usr/local/bin/
-RUN sudo mv /home/${user}/.local/bin/* /usr/local/bin/
+RUN sudo mv /root/.local/bin/* /usr/local/bin/
 RUN sudo chmod +x /usr/local/bin/*
 
 RUN sudo pacman --noconfirm -Syyuu \
