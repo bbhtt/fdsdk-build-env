@@ -179,12 +179,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    branch_regex = rf"""
-    ^update/
-    (components|include|abi|bootstrap|extensions)_.*[.]
-    (bst|yml)-diff_md5-.*
-    -for-{args.base_branch}$
-    """
+    branch_regex = (
+        rf"^update/"
+        r"(components|include|abi|bootstrap|extensions)_.*[.]"
+        r"(bst|yml)"
+        rf"-diff_md5-.*-for-{args.base_branch}$"
+    )
 
     if not validate_environment():
         return 1
