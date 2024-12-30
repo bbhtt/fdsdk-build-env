@@ -5,7 +5,7 @@ single-updater
 Usage: single-updater --base-branch BRANCH --element ELEMENT
 
 This is a wrapper for https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator
-to merge all updates in a single branch.
+to cherry-pick all updates in a single branch.
 
 MIT License
 
@@ -28,68 +28,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import re
-import subprocess
 import argparse
-import logging
-import shutil
 import datetime
+import logging
+import re
+import shutil
+import subprocess
+from subprocess import CompletedProcess
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
-def is_cmd(cmd):
+def run_command(
+    command: list[str],
+    check: bool = False,
+    capture_output: bool = False,
+    text: bool = True,
+) -> CompletedProcess:
+    return subprocess.run(
+        command,
+        stdout=subprocess.PIPE if capture_output else subprocess.DEVNULL,
+        stderr=subprocess.PIPE if capture_output else subprocess.DEVNULL,
+        check=check,
+        text=text,
+    )
+
+
+def is_cmd_present(cmd: str) -> bool:
     return shutil.which(cmd) is not None
 
 
-def is_git_dir():
-    return (
-        subprocess.run(
-            ["git", "rev-parse"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        ).returncode
-        == 0
-    )
+def is_git_dir() -> bool:
+    return run_command(["git", "rev-parse"]).returncode == 0
 
 
-def is_dirty():
-    result = subprocess.run(
-        ["git", "status", "--porcelain"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-        text=True,
-    )
+def is_dirty() -> bool:
+    result = run_command(["git", "status", "--porcelain"], capture_output=True)
     return bool(result.stdout.strip())
 
 
-def get_local_branches():
-    result = subprocess.run(
-        ["git", "branch"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=False,
-    )
+def get_local_branches() -> list[str]:
+    result = run_command(["git", "branch"], capture_output=True)
     return [line.strip().lstrip("* ").strip() for line in result.stdout.splitlines()]
 
 
-def delete_branch(branch):
-    return (
-        subprocess.run(
-            ["git", "branch", "-D", branch],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        ).returncode
-        == 0
-    )
+def delete_branch(branch: str) -> bool:
+    return run_command(["git", "branch", "-D", branch]).returncode == 0
 
 
-def run_updater(branch, element):
-    subprocess.run(
+def run_updater(branch: str, element: str) -> None:
+    run_command(
         [
             "auto_updater",
             f"--base_branch={branch}",
@@ -98,91 +86,58 @@ def run_updater(branch, element):
             "--shuffle-branches",
             "--on_track_error=continue",
             element,
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
+        ]
     )
 
 
-def create_branch(base_branch):
-    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    branch_name = f"updates/{timestamp}"
+def create_branch(base_branch: str) -> str | None:
+    timestamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
+    branch_name = f"updates/{base_branch}/{timestamp}"
     success = (
-        subprocess.run(
-            ["git", "checkout", "-b", branch_name, base_branch],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        ).returncode
-        == 0
+        run_command(["git", "checkout", "-b", branch_name, base_branch]).returncode == 0
     )
     return branch_name if success else None
 
 
-def reformat_commit_message(commit_message):
+def reformat_commit_message(commit_message: str) -> str:
     pattern = r"Update elements/(components|include|abi|bootstrap|extensions)/(.*?)[.](bst|yml) to (.*)"
-    match = re.match(pattern, commit_message)
-    if match:
-        element_name = match.group(2)
-        updated_version = match.group(4)
-        return f"{element_name}: Update to {updated_version}"
-    else:
-        return commit_message
-
-
-def cherry_pick_top_commit(branches, new_branch):
-    for branch in branches:
-        checkout_branch(branch)
-        result = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
-            text=True,
+    matched = re.match(pattern, commit_message)
+    if matched:
+        element_name = (
+            matched.group(2).split("/")[-1]
+            if "/" in matched.group(2)
+            else matched.group(2)
         )
+        updated_version = matched.group(4)
+        return f"{element_name}: Update to {updated_version}"
+    return commit_message
+
+
+def cherry_pick_top_commit(branch_list: list[str], single_branch: str) -> None:
+    for branch in branch_list:
+        checkout_branch(branch)
+        result = run_command(["git", "rev-parse", "HEAD"], capture_output=True)
         top_commit = result.stdout.strip()
         if top_commit:
-            checkout_branch(new_branch)
-            subprocess.run(
-                ["git", "cherry-pick", top_commit],
-                check=False,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            commit_message_result = subprocess.run(
-                ["git", "log", "-1", "--pretty=%B"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
-                text=True,
+            checkout_branch(single_branch)
+            run_command(["git", "cherry-pick", top_commit])
+            commit_message_result = run_command(
+                ["git", "log", "-1", "--pretty=%B"], capture_output=True
             )
             commit_message = commit_message_result.stdout.strip()
             new_message = reformat_commit_message(commit_message)
-            subprocess.run(
-                ["git", "commit", "--amend", "-m", new_message],
-                check=False,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
+            run_command(["git", "commit", "--amend", "-m", new_message])
 
 
-def checkout_branch(branch):
-    return (
-        subprocess.run(
-            ["git", "checkout", branch],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        ).returncode
-        == 0
-    )
+def checkout_branch(branch: str) -> bool:
+    return run_command(["git", "checkout", branch]).returncode == 0
 
 
-def validate_environment(element_name, base_branch):
+def validate_environment() -> bool:
     validations = [
-        (is_cmd("git"), "Unable to find git in PATH"),
-        (is_cmd("auto_updater"), "Unable to find auto_updater in PATH"),
+        (is_cmd_present("git"), "Unable to find git in PATH"),
+        (is_cmd_present("bst"), "Unable to find bst in PATH"),
+        (is_cmd_present("auto_updater"), "Unable to find auto_updater in PATH"),
         (is_git_dir(), "Current directory is not a git repository"),
         (not is_dirty(), "The repository is dirty"),
     ]
@@ -193,16 +148,20 @@ def validate_environment(element_name, base_branch):
     return True
 
 
-def cleanup(branches, base_branch, branch_regex):
+def cleanup_branches(branches: list[str], base_branch: str, branch_regex: str) -> None:
     checkout_branch(base_branch)
     clean_branches = [branch for branch in branches if re.match(branch_regex, branch)]
     for branch in clean_branches:
         delete_branch(branch)
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run auto_updater and merge changes in a single branch. A wrapper for gitlab-merge-request-generator to merge all updates in a single branch."
+        description=(
+            "Run auto_updater and merge changes in a single branch. "
+            "A wrapper for gitlab-merge-request-generator to cherry-pick "
+            "all updates in a single branch."
+        )
     )
     parser.add_argument(
         "--no-cleanup",
@@ -210,10 +169,7 @@ def main():
         help="Do not delete auto_updater local branches",
     )
     parser.add_argument(
-        "--base-branch",
-        type=str,
-        required=True,
-        help="Specify the base branch",
+        "--base-branch", type=str, required=True, help="Specify the base branch"
     )
     parser.add_argument(
         "--element",
@@ -223,32 +179,40 @@ def main():
     )
     args = parser.parse_args()
 
-    branch_regex = rf"^update/(components|include|abi|bootstrap|extensions)_.*[.](bst|yml)-diff_md5-.*-for-{args.base_branch}$"
+    branch_regex = rf"""
+    ^update/
+    (components|include|abi|bootstrap|extensions)_.*[.]
+    (bst|yml)-diff_md5-.*
+    -for-{args.base_branch}$
+    """
 
-    if not validate_environment(args.element, args.base_branch):
+    if not validate_environment():
         return 1
 
-    if not get_local_branches():
-        logging.error("No branches found")
+    branches = get_local_branches()
+    if not branches:
+        logging.error("No local git branches found")
         return 1
 
     if not args.no_cleanup:
-        cleanup(get_local_branches(), args.base_branch, branch_regex)
+        cleanup_branches(branches, args.base_branch, branch_regex)
 
     run_updater(args.base_branch, args.element)
 
     if not is_dirty():
-        new_branch = create_branch(args.base_branch)
-        if new_branch:
-            new_branches = [
+        single_branch = create_branch(args.base_branch)
+        if single_branch:
+            updater_branches = [
                 branch
                 for branch in get_local_branches()
                 if re.match(branch_regex, branch)
             ]
-            cherry_pick_top_commit(new_branches, new_branch)
+            cherry_pick_top_commit(updater_branches, single_branch)
             if not args.no_cleanup:
-                cleanup(new_branches, args.base_branch, branch_regex)
-            checkout_branch(new_branch)
+                cleanup_branches(get_local_branches(), args.base_branch, branch_regex)
+            if not checkout_branch(single_branch):
+                logging.error("Failed to checkout unified branch")
+                return 1
         else:
             logging.error("Failed to create new branch")
             return 1
