@@ -29,6 +29,8 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
 
+RUN echo 'ZDOTDIR=${XDG_CONFIG_HOME:-$HOME/.config}/zsh' > /etc/zshenv
+
 RUN useradd -r -md /home/${user} -s /bin/zsh --uid 1010 ${user} \
 	&& echo "%${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
 	&& mkdir -p /home/${user}/build-root
