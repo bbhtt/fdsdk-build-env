@@ -45,9 +45,9 @@ RUN cd /home/${user}/build-root && ./makepkg.sh || true
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
-RUN sudo pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git
-RUN sudo pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git
-RUN sudo pip install --break-system-packages libversion
+RUN sudo pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@661579cd3e35651413016b796e54779e92478b13
+RUN sudo pip install --break-system-packages git+https://gitlab.com/bbhtt/bst-to-lorry.git@4fa8e6c58e400ba6f1be4a167b3b0a6b6d7d86eb
+RUN sudo pip install --break-system-packages libversion==1.2.4
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1
