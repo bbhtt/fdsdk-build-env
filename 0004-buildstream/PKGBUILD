@@ -1,5 +1,5 @@
 pkgname=buildstream
-pkgver=2.3.0
+pkgver=2.4.0
 pkgrel=1
 pkgdesc="A powerful and flexible software integration toolset"
 arch=(x86_64)
@@ -29,7 +29,7 @@ optdepends=(
     "buildstream-plugins-experimental: Official experimental BuildStream plugins"
 )
 makedepends=(cython git python-packaging)
-source=("git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=5e88ea720442c61ec675e31fbce197f06201681d")
+source=("git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e00f22f155b3a61825931bb3a639fef5e2068f34")
 sha256sums=('SKIP')
 
 prepare() {
