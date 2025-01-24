@@ -1,5 +1,5 @@
 pkgname=buildstream-plugins
-pkgver=2.3.0
+pkgver=2.4.0
 pkgrel=1
 pkgdesc="A collection of plugins for the BuildStream project."
 arch=(any)
@@ -16,7 +16,7 @@ depends=(
     python-tomli
 )
 makedepends=(cython python-packaging python-setuptools)
-source=("git+https://github.com/apache/buildstream-plugins.git#tag=${pkgver}&commit=0a0bb47e5b933cf1345b6edc410dada4242624e6")
+source=("git+https://github.com/apache/buildstream-plugins.git#tag=${pkgver}&commit=b623961ef968a6bdeb86c907360276374b79ebff")
 sha256sums=('SKIP')
 
 build() {
