@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # The Unlicense
 #
@@ -15,7 +15,7 @@ top_dir="$(pwd)"
 build_pkg() {
     dir="$1"
     base=$(basename "$dir")
-    if test -f "$dir/PKGBUILD"; then
+    if [[ -f "$dir/PKGBUILD" ]]; then
         echo "===> Building $base <==="
         cd "$dir" && makepkg -Ccsir --needed --noconfirm
         echo "===> Finished building $base <==="
@@ -23,6 +23,6 @@ build_pkg() {
     fi
 }
 
-for i in $(find . -maxdepth 1 -mindepth 1 -type d ! -path './.git'); do
-    build_pkg "$i"
+find . -maxdepth 1 -mindepth 1 -type d ! -path './.git' -print0 | while IFS= read -r -d '' dir; do
+    build_pkg "$dir"
 done
