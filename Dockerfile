@@ -6,25 +6,11 @@
 #
 # See the full text of the Unlicense at: https://unlicense.org/
 
-FROM archlinux:latest@sha256:901cf83a14f09d9ba70b219e22f67abd4d6346cb6d3f0c048cd08f22fb9a7425
+FROM ghcr.io/bbhtt/fdsdk-build-env-base:latest
 
-LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
+RUN pacman-key --init && pacman --noconfirm -Syyuu
 
 ARG user=user
-
-RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.conf && \
-	sed -i '/CheckSpace/s/^/#/g' /etc/pacman.conf && \
-	sed -i '/OPTIONS/s/debug/!debug/g' /etc/makepkg.conf && \
-	pacman-key --init && pacman --noconfirm -Syyuu
-
-RUN pacman --noconfirm --needed -S base base-devel bat desktop-file-utils \
-	diffoscope diffutils wl-clipboard eza flatpak-builder git-delta \
-	micro qemu-base starship swtpm time traceroute trash-cli tree wget \
-	zsh inetutils fzf python-pip python-virtualenv python-gitlab ruff \
-	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
-	python-gitlab python-ruamel-yaml python-packaging python-pyelftools \
-	python-urllib3 python-pyaml lzip python-gitpython python-tabulate \
-	man-db
 
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
