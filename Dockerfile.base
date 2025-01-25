@@ -19,11 +19,16 @@ RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.con
 	sed -i '/OPTIONS/s/debug/!debug/g' /etc/makepkg.conf && \
 	pacman-key --init && pacman --noconfirm -Syyuu
 
-RUN pacman --noconfirm --needed -S base base-devel bat desktop-file-utils \
-	diffoscope diffutils wl-clipboard eza flatpak-builder git-delta \
-	micro qemu-base starship swtpm time traceroute trash-cli tree wget \
-	zsh inetutils fzf python-pip python-virtualenv python-gitlab ruff \
-	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
-	python-gitlab python-ruamel-yaml python-packaging python-pyelftools \
-	python-urllib3 python-pyaml lzip python-gitpython python-tabulate \
-	man-db
+RUN pacman --noconfirm --needed -S base base-devel bat \
+	desktop-file-utils diffoscope diffutils wl-clipboard eza \
+	flatpak-builder git-delta micro qemu-base starship swtpm time \
+	traceroute trash-cli tree wget zsh inetutils fzf python-pip \
+	python-virtualenv python-gitlab ruff python-pylint \
+	python-ruamel-yaml libabigail openssh gnupg less python-packaging \
+	python-pyelftools python-urllib3 python-pyaml lzip python-gitpython \
+	python-tabulate man-db python python-setuptools bubblewrap fuse3 \
+	google-glog grpc openssl protobuf tomlplusplus util-linux cmake git
+	ninja python-click python-dateutil python-grpcio python-jinja \
+	python-protobuf python-psutil python-ruamel.yaml.clib python-ujson \
+	bzip2 gzip tar xz cython bazel ostree python-arpy python-requests \
+	python-tomlkit quilt gcc-libs
