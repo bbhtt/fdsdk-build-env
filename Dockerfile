@@ -15,14 +15,7 @@ ARG user=user
 RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.conf && \
 	sed -i '/CheckSpace/s/^/#/g' /etc/pacman.conf && \
 	sed -i '/OPTIONS/s/debug/!debug/g' /etc/makepkg.conf && \
-	pacman-key --init
-
-RUN pacman --noconfirm -Syyuu && pacman --noconfirm --needed -S pacman-contrib
-RUN cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
-RUN sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
-RUN rankmirrors -n 10 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
-
-RUN pacman --noconfirm -Syyuu
+	pacman-key --init && pacman --noconfirm -Syyuu
 
 RUN pacman --noconfirm --needed -S base base-devel bat desktop-file-utils \
 	diffoscope diffutils wl-clipboard eza flatpak-builder git-delta \
