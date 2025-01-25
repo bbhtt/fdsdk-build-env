@@ -53,7 +53,7 @@ RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1 libversion==1.2.4
 
 RUN sudo pacman --noconfirm -Syyuu \
-	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
+    && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
 	&& sudo pacman -Scc --noconfirm \
 	&& sudo rm -rf /tmp/* \
 	&& sudo rm -rf /home/${user}/build-root \
