@@ -8,12 +8,17 @@
 #
 # See the full text of the Unlicense at: https://unlicense.org/
 
+set -euo pipefail
+
 top_dir="$(pwd)"
 
 build_pkg() {
     dir="$1"
+    base=$(basename "$dir")
     if test -f "$dir/PKGBUILD"; then
+        echo "===> Building $base <==="
         cd "$dir" && makepkg -Ccsir --needed --noconfirm
+        echo "===> Finished building $base <==="
         cd "$top_dir"
     fi
 }

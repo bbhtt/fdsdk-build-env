@@ -41,7 +41,7 @@ USER ${user}
 RUN curl -s -o /home/${user}/zshrc https://raw.githubusercontent.com/bbhtt/dotfiles/refs/heads/main/zshrc
 RUN printf "echo 'A zsh config is provided at ~/zshrc, move it to ~/.zshrc to have effect'\n" > ~/.zshrc
 RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream.conf
-RUN cd /home/${user}/build-root && ./makepkg.sh || true
+RUN cd /home/${user}/build-root && ./makepkg.sh
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
