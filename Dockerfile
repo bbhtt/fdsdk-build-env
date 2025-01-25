@@ -24,7 +24,7 @@ RUN pacman --noconfirm -S base base-devel bat desktop-file-utils \
 	python-pylint python-ruamel-yaml libabigail openssh gnupg less \
 	qemu-user-static qemu-user-static-binfmt python-gitlab \
 	python-ruamel-yaml python-packaging python-pyelftools \
-	python-urllib3 python-pyaml lzip
+	python-urllib3 python-pyaml lzip python-gitpython python-tabulate
 
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
@@ -45,12 +45,12 @@ RUN cd /home/${user}/build-root && ./makepkg.sh
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
-RUN sudo pip install --break-system-packages git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@661579cd3e35651413016b796e54779e92478b13
-RUN sudo pip install --break-system-packages git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@e1734575d7333406056aeaef739099588125fb7c
-RUN sudo pip install --break-system-packages libversion==1.2.4
+RUN sudo pip install --break-system-packages --no-deps \
+    git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@661579cd3e35651413016b796e54779e92478b13 \
+    git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@e1734575d7333406056aeaef739099588125fb7c
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
-RUN sudo pip install --break-system-packages dulwich==0.22.1
+RUN sudo pip install --break-system-packages dulwich==0.22.1 libversion==1.2.4
 
 RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo pacman -Rs --noconfirm "$(pacman -Q|grep "\-debug"|cut -d ' ' -f 1|xargs)" || true \
