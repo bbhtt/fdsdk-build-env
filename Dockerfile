@@ -17,7 +17,7 @@ RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.con
 	sed -i '/OPTIONS/s/debug/!debug/g' /etc/makepkg.conf && \
 	pacman-key --init
 
-RUN pacman --noconfirm --needed -S pacman-contrib 
+RUN pacman --noconfirm -Syyuu && pacman --noconfirm --needed -S pacman-contrib
 RUN cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 RUN sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.backup
 RUN rankmirrors -n 10 /etc/pacman.d/mirrorlist.backup > /etc/pacman.d/mirrorlist
