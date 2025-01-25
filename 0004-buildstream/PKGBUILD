@@ -29,11 +29,15 @@ optdepends=(
     "buildstream-plugins-experimental: Official experimental BuildStream plugins"
 )
 makedepends=(cython git python-packaging)
-source=("git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e00f22f155b3a61825931bb3a639fef5e2068f34")
-sha256sums=('SKIP')
+source=(
+    "git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e00f22f155b3a61825931bb3a639fef5e2068f34"
+    "preexec_fn_removal.patch"
+)
+sha256sums=('SKIP' '69ed13d465111f383d7952cfd3d62b393176708a1a84d6a8949a7500dfe2fac1')
 
 prepare() {
     cd $pkgname
+    patch -Np1 -i ../preexec_fn_removal.patch
 }
 
 build() {

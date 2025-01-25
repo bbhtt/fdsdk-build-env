@@ -1,0 +1,100 @@
+From c578437c8882fd259a01adee666b2ffbd755cac7 Mon Sep 17 00:00:00 2001
+From: Seppo Yli-Olli <seppo.yliolli@gmail.com>
+Date: Fri, 16 Sep 2022 20:39:05 +0300
+Subject: [PATCH] Use subprocess umask support
+
+This requires Python 3.9 or newer
+
+diff --git a/src/buildstream/utils.py b/src/buildstream/utils.py
+index 9d058a28e..229230237 100644
+--- a/src/buildstream/utils.py
++++ b/src/buildstream/utils.py
+@@ -13,12 +13,6 @@
+ #
+ #  Authors:
+ #        Tristan Van Berkom <tristan.vanberkom@codethink.co.uk>
+-
+-# Disable this for the file, because pylint is not picking it up
+-# when specifying it on the specific line.
+-#
+-# pylint: disable=subprocess-popen-preexec-fn
+-#
+ """
+ Utilities
+ =========
+@@ -1260,14 +1254,7 @@ def _call(*popenargs, terminate=False, **kwargs):
+ 
+     process = None
+ 
+-    old_preexec_fn = kwargs.get("preexec_fn")
+-    if "preexec_fn" in kwargs:
+-        del kwargs["preexec_fn"]
+-
+-    def preexec_fn():
+-        os.umask(stat.S_IWGRP | stat.S_IWOTH)
+-        if old_preexec_fn is not None:
+-            old_preexec_fn()
++    kwargs.setdefault("umask", stat.S_IWGRP | stat.S_IWOTH)
+ 
+     # Handle termination, suspend and resume
+     def kill_proc():
+@@ -1313,7 +1300,7 @@ def _call(*popenargs, terminate=False, **kwargs):
+             os.killpg(group_id, signal.SIGCONT)
+ 
+     with _signals.suspendable(suspend_proc, resume_proc), _signals.terminator(kill_proc), subprocess.Popen(
+-        *popenargs, preexec_fn=preexec_fn, universal_newlines=True, **kwargs
++        *popenargs, universal_newlines=True, **kwargs
+     ) as process:
+         # Here, we don't use `process.communicate()` directly without a timeout
+         # This is because, if we were to do that, and the process would never
+-- 
+2.45.2.windows.1
+
+From 797c827d455b97710048aad2084fd2957396beef Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=BCrg=20Billeter?= <j@bitron.ch>
+Date: Fri, 20 Dec 2024 16:49:00 +0100
+Subject: [PATCH] casdprocessmanager.py: Don't use `preexec_fn` on Python 3.11+
+
+The use of `preexec_fn` is not generally safe when using multiple
+threads.
+
+diff --git a/src/buildstream/_cas/casdprocessmanager.py b/src/buildstream/_cas/casdprocessmanager.py
+index 5cc64853e..d1157dd93 100644
+--- a/src/buildstream/_cas/casdprocessmanager.py
++++ b/src/buildstream/_cas/casdprocessmanager.py
+@@ -20,6 +20,7 @@ import random
+ import shutil
+ import stat
+ import subprocess
++import sys
+ import tempfile
+ import time
+ from subprocess import CalledProcessError
+@@ -126,16 +127,21 @@ class CASDProcessManager:
+         self._start_time = time.time()
+         self._logfile = self._rotate_and_get_next_logfile()
+ 
++        # Create a new process group for buildbox-casd such that SIGINT won't reach it.
++        if sys.version_info >= (3, 11):
++            process_group_kwargs = {"process_group": 0}
++        else:
++            process_group_kwargs = {"preexec_fn": os.setpgrp}
++
+         with open(self._logfile, "w", encoding="utf-8") as logfile_fp:
+             # The frontend will take care of terminating buildbox-casd.
+-            # Create a new process group for it such that SIGINT won't reach it.
+-            self.process = subprocess.Popen(  # pylint: disable=consider-using-with, subprocess-popen-preexec-fn
++            self.process = subprocess.Popen(  # pylint: disable=consider-using-with
+                 casd_args,
+                 cwd=path,
+                 stdout=logfile_fp,
+                 stderr=subprocess.STDOUT,
+-                preexec_fn=os.setpgrp,
+                 env=self.__buildbox_casd_env(),
++                **process_group_kwargs
+             )
+ 
+         self._casd_channel = None
+-- 
+2.45.2.windows.1
+
