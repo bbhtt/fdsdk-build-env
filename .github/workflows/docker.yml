@@ -8,7 +8,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 60
+    if: github.event_name != 'pull_request'
     permissions:
       packages: write
     strategy:
@@ -31,8 +32,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push the base image
-        uses: docker/build-push-action@v5
-        if: success() && github.event_name != 'pull_request'
+        id: base_build
+        uses: docker/build-push-action@v6
+        if: startsWith(github.event.head_commit.message, '[build-base]:')
         with:
           context: .
           file: Dockerfile.base
@@ -50,6 +52,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Create and push the base manifest
+        if: steps.base_build.outcome == 'success'
         run: |
           docker manifest create \
             ghcr.io/${{ github.repository }}-base:${{ github.sha }} \
@@ -64,8 +67,8 @@ jobs:
           docker manifest push ghcr.io/${{ github.repository }}-base:latest
 
       - name: Build and push the image
-        uses: docker/build-push-action@v5
-        if: success() && github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
+        id: image_build
         with:
           context: .
           file: Dockerfile
@@ -83,6 +86,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Create and push manifest
+        if: steps.image_build.outcome == 'success'
         run: |
           docker manifest create \
             ghcr.io/${{ github.repository }}:${{ github.sha }} \
