@@ -27,7 +27,7 @@ RUN pacman --noconfirm --needed -S base base-devel bat \
 	python-ruamel-yaml libabigail openssh gnupg less python-packaging \
 	python-pyelftools python-urllib3 python-pyaml lzip python-gitpython \
 	python-tabulate man-db python python-setuptools bubblewrap fuse3 \
-	google-glog grpc openssl protobuf tomlplusplus util-linux cmake git
+	google-glog grpc openssl protobuf tomlplusplus util-linux cmake git \
 	ninja python-click python-dateutil python-grpcio python-jinja \
 	python-protobuf python-psutil python-ruamel.yaml.clib python-ujson \
 	bzip2 gzip tar xz cython bazel ostree python-arpy python-requests \
