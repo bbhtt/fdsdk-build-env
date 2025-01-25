@@ -23,6 +23,8 @@ build_pkg() {
     fi
 }
 
-find . -maxdepth 1 -mindepth 1 -type d ! -path './.git' -print0 | while IFS= read -r -d '' dir; do
+mapfile -d '' dirs < <(find . -maxdepth 1 -mindepth 1 -type d ! -name '.*' -print0 | sort -z)
+
+for dir in "${dirs[@]}"; do
     build_pkg "$dir"
 done
