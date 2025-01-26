@@ -39,6 +39,6 @@ RUN sudo pacman --noconfirm -Syyuu \
     && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
 	&& sudo pacman -Scc --noconfirm \
 	&& sudo rm -rf /tmp/* \
-	&& sudo userdel -r -f ${user} || true \
+	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers \
 	&& sudo rm -rf /home/${user}/ \
-	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers
+	&& sudo userdel -r -f ${user} || true
