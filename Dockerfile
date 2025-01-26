@@ -39,6 +39,6 @@ RUN sudo pacman --noconfirm -Syyuu \
     && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
 	&& sudo pacman -Scc --noconfirm \
 	&& sudo rm -rf /tmp/* \
-	&& userdel -r -f ${user} \
+	&& sudo userdel -r -f ${user} \
 	&& sudo rm -rf /home/${user}/build-root \
 	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers
