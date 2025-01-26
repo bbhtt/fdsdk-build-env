@@ -15,8 +15,6 @@ ARG user=user
 RUN mkdir -p /usr/libexec/git-core/ \
 	&& ln -s /usr/lib/git-core/git-credential-libsecret /usr/libexec/git-core/git-credential-libsecret
 
-RUN echo 'ZDOTDIR=${XDG_CONFIG_HOME:-$HOME/.config}/zsh' > /etc/zshenv
-
 RUN useradd -r -md /home/${user} -s /bin/zsh --uid 1010 ${user} \
 	&& echo "%${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
 	&& mkdir -p /home/${user}/build-root
@@ -24,10 +22,9 @@ RUN useradd -r -md /home/${user} -s /bin/zsh --uid 1010 ${user} \
 COPY --chown=${user}:${user} . /home/${user}/build-root
 
 USER ${user}
-RUN curl -s -o /home/${user}/zshrc https://raw.githubusercontent.com/bbhtt/dotfiles/refs/heads/main/zshrc
-RUN printf "echo 'A zsh config is provided at ~/zshrc, move it to ~/.zshrc to have effect'\n" > ~/.zshrc
-RUN mkdir -p ~/.config && echo -e "cache:\n  quota: 50G" > ~/.config/buildstream.conf
+
 RUN cd /home/${user}/build-root && ./makepkg.sh
+
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
@@ -42,7 +39,6 @@ RUN sudo pacman --noconfirm -Syyuu \
     && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
 	&& sudo pacman -Scc --noconfirm \
 	&& sudo rm -rf /tmp/* \
+	&& userdel -r -f ${user} \
 	&& sudo rm -rf /home/${user}/build-root \
 	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers
-
-WORKDIR  /home/${user}
