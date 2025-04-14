@@ -30,7 +30,7 @@ RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/sin
 
 RUN sudo pip install --break-system-packages --no-deps \
     git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@773c8be54af9a9dd175157f6f1e38c4b86f2bcab \
-    git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@f3a6a22fe09161e487bb57292cb25890350ce97e
+    git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@65512da95f7ea62156b4370332ef602dd9e4eb6e
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1 libversion==1.2.4
