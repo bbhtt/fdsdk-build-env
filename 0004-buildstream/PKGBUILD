@@ -1,5 +1,5 @@
 pkgname=buildstream
-pkgver=2.4.0
+pkgver=2.4.1
 pkgrel=1
 pkgdesc="A powerful and flexible software integration toolset"
 arch=(x86_64)
@@ -30,14 +30,12 @@ optdepends=(
 )
 makedepends=(cython git python-packaging)
 source=(
-    "git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e00f22f155b3a61825931bb3a639fef5e2068f34"
-    "preexec_fn_removal.patch"
+    "git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e8e9dff5906b59a9c7e85470da94dc48131f7c6e"
 )
-sha256sums=('SKIP' '69ed13d465111f383d7952cfd3d62b393176708a1a84d6a8949a7500dfe2fac1')
+sha256sums=('SKIP')
 
 prepare() {
     cd $pkgname
-    patch -Np1 -i ../preexec_fn_removal.patch
 }
 
 build() {
