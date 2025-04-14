@@ -29,7 +29,7 @@ RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/single-updater
 
 RUN sudo pip install --break-system-packages --no-deps \
-    git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@661579cd3e35651413016b796e54779e92478b13 \
+    git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@773c8be54af9a9dd175157f6f1e38c4b86f2bcab \
     git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@f3a6a22fe09161e487bb57292cb25890350ce97e
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
