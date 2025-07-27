@@ -31,7 +31,7 @@ RUN sudo install -Dm0755 /home/${user}/build-root/single-updater.py /usr/bin/sin
 RUN sudo pip install --break-system-packages --no-deps \
     git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@773c8be54af9a9dd175157f6f1e38c4b86f2bcab \
     git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@65512da95f7ea62156b4370332ef602dd9e4eb6e \
-    git+https://github.com/bbhtt/lorry-mirror-updater.git@v0.1.3#egg=lorry_mirror_updater
+    git+https://github.com/bbhtt/lorry-mirror-updater.git@v0.1.4#egg=lorry_mirror_updater
 
 RUN sudo pacman --noconfirm -Rdd python-dulwich
 RUN sudo pip install --break-system-packages dulwich==0.22.1 libversion==1.2.4
