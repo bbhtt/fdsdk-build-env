@@ -10,9 +10,7 @@ FROM archlinux:latest@sha256:95e914e8b16eb07c8660c4352c1530a52dcf829038f1f652335
 
 LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
 
-# Revert to python 3.12 until
-# https://github.com/apache/buildstream/issues/1988 is solved
-RUN echo "Server=https://archive.archlinux.org/repos/2025/04/13/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+RUN echo "Server=https://archive.archlinux.org/repos/2025/08/06/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 
 RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.conf && \
 	sed -i '/CheckSpace/s/^/#/g' /etc/pacman.conf && \
