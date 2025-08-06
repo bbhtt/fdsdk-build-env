@@ -5,8 +5,8 @@ pkgdesc="Shared protocol-buffer definitions and various helper functions"
 arch=(x86_64)
 url="https://buildgrid.build"
 license=('Apache')
-depends=('bubblewrap' 'curl' 'fuse3' 'google-glog' 'grpc' 'nlohmann-json' 'openssl' 'protobuf' 'tomlplusplus' 'util-linux')
-makedepends=('cmake' 'git' 'ninja' 'tomlplusplus')
+depends=('bubblewrap' 'curl' 'fuse3' 'google-glog' 'grpc' 'openssl' 'protobuf' 'tomlplusplus' 'util-linux')
+makedepends=('cmake' 'git' 'ninja' 'tomlplusplus' 'nlohmann-json')
 source=("git+https://gitlab.com/BuildGrid/buildbox/buildbox-common#tag=${pkgver}&commit=53ddc56421210818b88c577629593fa147404d7b")
 sha256sums=('SKIP')
 
