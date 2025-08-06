@@ -6,7 +6,7 @@
 #
 # See the full text of the Unlicense at: https://unlicense.org/
 
-FROM archlinux:latest@sha256:95e914e8b16eb07c8660c4352c1530a52dcf829038f1f65233543fee28a78d6a
+FROM archlinux:latest@sha256:c2bbc404662f4ed762eb7afc801965184d768aea81b8341cbc5b1c87170e59c0
 
 LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
 
