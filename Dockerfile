@@ -33,8 +33,8 @@ RUN sudo pip install --break-system-packages --no-deps \
     git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@65512da95f7ea62156b4370332ef602dd9e4eb6e \
     git+https://github.com/bbhtt/lorry-mirror-updater.git@v0.1.4#egg=lorry_mirror_updater
 
-RUN sudo pacman --noconfirm -Rdd python-dulwich
-RUN sudo pip install --break-system-packages dulwich==0.22.1 libversion==1.2.4
+#RUN sudo pacman --noconfirm -Rdd python-dulwich
+RUN sudo pip install --break-system-packages libversion==1.2.4
 
 RUN sudo pacman --noconfirm -Syyuu \
     && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
