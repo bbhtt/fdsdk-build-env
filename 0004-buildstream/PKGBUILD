@@ -1,5 +1,5 @@
 pkgname=buildstream
-pkgver=2.4.1
+pkgver=2.5.0
 pkgrel=1
 pkgdesc="A powerful and flexible software integration toolset"
 arch=(x86_64)
@@ -30,7 +30,7 @@ optdepends=(
 )
 makedepends=(cython git python-packaging)
 source=(
-    "git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=e8e9dff5906b59a9c7e85470da94dc48131f7c6e"
+    "git+https://github.com/apache/buildstream.git#tag=${pkgver}&commit=a847a77882cb372b1dd3b3dd00545c95cee1088e"
 )
 sha256sums=('SKIP')
 
