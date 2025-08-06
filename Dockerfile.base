@@ -31,4 +31,4 @@ RUN pacman --noconfirm --needed -S base base-devel bat \
 	ninja python-click python-dateutil python-grpcio python-jinja \
 	python-protobuf python-psutil python-ruamel.yaml.clib python-ujson \
 	bzip2 gzip tar xz cython bazel ostree python-arpy python-requests \
-	python-tomlkit quilt gcc-libs git-lfs uv mypy glab
+	python-tomlkit quilt gcc-libs git-lfs uv mypy glab nlohmann-json
