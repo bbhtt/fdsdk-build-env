@@ -43,3 +43,5 @@ RUN sudo pacman --noconfirm -Syyuu \
 	&& sudo sed -i "/^%${user} ALL=(ALL) NOPASSWD: ALL$/d" /etc/sudoers \
 	&& sudo rm -rf /home/${user}/ \
 	&& sudo userdel -r -f ${user} || true
+
+ENV PYTHONWARNINGS="ignore::UserWarning"
