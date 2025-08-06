@@ -16,6 +16,7 @@ RUN echo "Server=https://archive.archlinux.org/repos/2025/04/13/\$repo/os/\$arch
 
 RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.conf && \
 	sed -i '/CheckSpace/s/^/#/g' /etc/pacman.conf && \
+	sed -i "s/^SigLevel.*/SigLevel = Never/g" /etc/pacman.conf && \
 	sed -i '/OPTIONS/s/debug/!debug/g' /etc/makepkg.conf && \
 	pacman-key --init && pacman --noconfirm -Syyuu
 
