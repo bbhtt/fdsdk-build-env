@@ -30,8 +30,9 @@ RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 RUN sudo pip install --break-system-packages --no-deps \
     git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@773c8be54af9a9dd175157f6f1e38c4b86f2bcab \
     git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@65512da95f7ea62156b4370332ef602dd9e4eb6e \
-    git+https://github.com/bbhtt/bst-single-updater.git@v0.1.0#egg=bst_single_updater \
-    git+https://github.com/bbhtt/lorry-mirror-updater.git@v0.1.4#egg=lorry_mirror_updater
+    "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=bst-single-updater" \
+    "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=lorry-mirror-updater" \
+    "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=nvd-database-downloader"
 
 RUN sudo pacman --noconfirm -Rdd python-click
 RUN sudo pip install --break-system-packages click==8.2.1 libversion==1.2.4
