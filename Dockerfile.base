@@ -6,11 +6,11 @@
 #
 # See the full text of the Unlicense at: https://unlicense.org/
 
-FROM archlinux:latest@sha256:c2bbc404662f4ed762eb7afc801965184d768aea81b8341cbc5b1c87170e59c0
+FROM archlinux:latest@sha256:9b8e02df0f0a08fa8144d901932bd85d751257f83e00314053314a27ff87884f
 
 LABEL org.opencontainers.image.authors="bbhtt <bbhtt.zn0i8@slmail.me>"
 
-RUN echo "Server=https://archive.archlinux.org/repos/2025/08/06/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+RUN echo "Server=https://archive.archlinux.org/repos/2026/02/06/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 
 RUN echo -e "keyserver-options auto-key-retrieve" >> /etc/pacman.d/gnupg/gpg.conf && \
 	sed -i '/CheckSpace/s/^/#/g' /etc/pacman.conf && \
