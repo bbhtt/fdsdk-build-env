@@ -30,4 +30,4 @@ RUN pacman --noconfirm --needed -S base base-devel bat \
 	python-protobuf python-psutil python-ruamel.yaml.clib python-ujson \
 	bzip2 gzip tar xz cython bazel ostree python-arpy python-requests \
 	python-tomlkit quilt gcc-libs git-lfs uv mypy glab nlohmann-json \
-	qemu-ui-gtk
+	qemu-ui-gtk pre-commit
