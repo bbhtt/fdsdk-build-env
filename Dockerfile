@@ -28,8 +28,8 @@ RUN cd /home/${user}/build-root && ./makepkg.sh
 RUN sudo install -Dm0755 /home/${user}/build-root/abicheck.sh /usr/bin/abicheck
 
 RUN sudo pip install --break-system-packages --no-deps \
-    git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@773c8be54af9a9dd175157f6f1e38c4b86f2bcab \
-    git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@65512da95f7ea62156b4370332ef602dd9e4eb6e \
+    git+https://gitlab.com/BuildStream/infrastructure/gitlab-merge-request-generator.git@35e8292793d2712c11f24c48fc056a2597166305 \
+    git+https://gitlab.com/CodethinkLabs/lorry/bst-to-lorry.git@028afcd3b7d9640bebb1bb9855ec6d3d9797a1ff \
     "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=bst-single-updater" \
     "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=lorry-mirror-updater" \
     "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=nvd-database-downloader"
