@@ -34,8 +34,8 @@ RUN sudo pip install --break-system-packages --no-deps \
     "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=lorry-mirror-updater" \
     "git+https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git@$(git ls-remote --tags https://gitlab.com/freedesktop-sdk/freedesktop-sdk-utils.git | awk -F/ '{print $3}' | sed 's/\^{}$//' | sort -V | tail -n1)#subdirectory=nvd-database-downloader"
 
-RUN sudo pacman --noconfirm -Rdd python-click
-RUN sudo pip install --break-system-packages click==8.2.1 libversion==1.2.4
+RUN sudo pacman --noconfirm -Rdd python-click python-dulwich
+RUN sudo pip install --break-system-packages click==8.2.1 libversion==1.2.4 dulwich==0.24.10
 
 RUN sudo pacman --noconfirm -Syyuu \
     && pacman -Q | grep "\-debug" | cut -d ' ' -f 1 | xargs -r sudo pacman -Rs --noconfirm \
